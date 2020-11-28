@@ -28,4 +28,6 @@ public interface PersistUserData {
 
     User retriveUserData();
 
+    void clearUserData();
+
 }

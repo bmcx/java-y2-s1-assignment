@@ -17,11 +17,7 @@
 package medcenter;
 
 import com.formdev.flatlaf.FlatDarkLaf;
-import medcenter.helpers.UserDataInFile;
-import medcenter.models.Doctor;
-import medcenter.models.User;
-import static medcenter.models.types.CommonTypes.UserRole.DOCTOR;
-import medcenter.views.Home;
+import medcenter.views.Login;
 
 /**
  *
@@ -34,8 +30,7 @@ public class MedCenter {
      */
     public static void main(String[] args) {
         FlatDarkLaf.install();
-        new Home().setVisible(true);
-        
+        new Login().setVisible(true);
     }
 
 }

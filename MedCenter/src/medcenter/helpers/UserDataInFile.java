@@ -18,6 +18,7 @@ package medcenter.helpers;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.nio.file.*;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.logging.Level;
@@ -64,7 +65,9 @@ public class UserDataInFile implements PersistUserData {
 
         Object obj = null;
         try {
-            obj = new JSONParser().parse(new FileReader(filename));
+            FileReader f = new FileReader(filename);
+            obj = new JSONParser().parse(f);
+            f.close();
         } catch (IOException ex) {
             return null;
         } catch (ParseException ex) {
@@ -79,6 +82,16 @@ public class UserDataInFile implements PersistUserData {
         String username = (String) jsonObj.get("username");
         UserRole role = UserRole.valueOf((String) jsonObj.get("role"));
         return new User(id, firstname, lastname, username, role);
+    }
+
+    @Override
+    public void clearUserData() {
+
+        try {
+            System.out.println(Files.deleteIfExists(Paths.get(filename)));
+        } catch (IOException ex) {
+            Logger.getLogger(UserDataInFile.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
 }

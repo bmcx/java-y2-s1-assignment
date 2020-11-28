@@ -15,12 +15,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package medcenter.controller;
+package medcenter.helpers;
 
 /**
  *
  * @author Chandima Bandara
  */
-public class Home {
+class File {
+
+    File(String filenametxt) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
     
 }
