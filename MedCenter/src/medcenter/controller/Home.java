@@ -14,18 +14,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package medcenter.models;
 
-import static medcenter.models.types.CommonTypes.UserRole.DOCTOR;
+package medcenter.controller;
 
 /**
  *
  * @author Chandima Bandara
  */
-public class Doctor extends User {
-
-    public Doctor(int id, String firstname, String lastname, String username) {
-        super(id, firstname, lastname, username, DOCTOR);
-    }
-
+public class Home {
+    
 }

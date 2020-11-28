@@ -30,9 +30,15 @@ public class User {
     String username;
     UserRole role;
 
-    public User(int id, String username, String firstname, String lastname, UserRole role) {
+    public String getRole() {
+        return role.name();
+    }
+
+    public User(int id, String firstname, String lastname, String username, UserRole role) {
         this.id = id;
         this.username = username;
+        this.firstname = firstname;
+        this.lastname = lastname;
         this.role = role;
     }
 

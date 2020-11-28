@@ -14,18 +14,18 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package medcenter.models;
+package medcenter.framework;
 
-import static medcenter.models.types.CommonTypes.UserRole.DOCTOR;
+import medcenter.models.User;
 
 /**
  *
  * @author Chandima Bandara
  */
-public class Doctor extends User {
+public interface PersistUserData {
 
-    public Doctor(int id, String firstname, String lastname, String username) {
-        super(id, firstname, lastname, username, DOCTOR);
-    }
+    void saveUserData(User user);
+
+    User retriveUserData();
 
 }
