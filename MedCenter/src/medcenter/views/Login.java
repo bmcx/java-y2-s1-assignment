@@ -16,11 +16,12 @@
  */
 package medcenter.views;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import com.mysql.jdbc.CommunicationsException;
 import javax.swing.JOptionPane;
 import medcenter.controller.AuthController;
 import medcenter.models.User;
+import static medcenter.models.types.CommonTypes.UserRole.*;
+import medcenter.models.types.InvalidLoginData;
 
 /**
  *
@@ -34,8 +35,10 @@ public class Login extends javax.swing.JFrame {
      * Creates new form Home
      */
     public Login() {
+
         controller = new AuthController();
         initComponents();
+
     }
 
     /**
@@ -132,17 +135,17 @@ public class Login extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(670, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
                 .addComponent(pnlLogin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(pnlLogin, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(217, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -168,7 +171,29 @@ public class Login extends javax.swing.JFrame {
         try {
             currentUser = controller.loginUser(username, password);
             dispose();
-        } catch (Exception ex) {
+            switch (currentUser.getRole()) {
+                case "DOCTOR":
+                    DoctorHome doctorHome = new DoctorHome();
+                    doctorHome.setLocationRelativeTo(null);
+                    doctorHome.setVisible(true);
+                    break;
+
+                case "STUDENT":
+                    StudentHome studentHome = new StudentHome();
+                    studentHome.setLocationRelativeTo(null);
+                    studentHome.setVisible(true);
+                    break;
+
+                case "STAFF":
+                    StaffHome staffHome = new StaffHome();
+                    staffHome.setLocationRelativeTo(null);
+                    staffHome.setVisible(true);
+                    break;
+                default:
+                    JOptionPane.showMessageDialog(null, "There might be an error,Please restart the application", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+
+        } catch (InvalidLoginData ex) {
             JOptionPane.showMessageDialog(null, "Username or password incorrect", "Error", JOptionPane.ERROR_MESSAGE);
         }
 

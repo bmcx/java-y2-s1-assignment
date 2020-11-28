@@ -14,26 +14,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package medcenter;
-
-import com.formdev.flatlaf.FlatDarkLaf;
-import medcenter.views.Login;
+package medcenter.models.types;
 
 /**
  *
  * @author Chandima Bandara
  */
-public class MedCenter {
+public class InvalidLoginData extends Exception {
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) {
-        FlatDarkLaf.install();
-
-        Login login = new Login();
-        login.setLocationRelativeTo(null);
-        login.setVisible(true);
+    public InvalidLoginData() {
     }
 
 }

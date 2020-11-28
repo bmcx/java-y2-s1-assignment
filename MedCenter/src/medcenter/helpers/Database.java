@@ -18,6 +18,7 @@ package medcenter.helpers;
 
 import com.mysql.jdbc.Connection;
 import java.sql.DriverManager;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -34,11 +35,13 @@ public class Database {
             try {
                 Class.forName("com.mysql.jdbc.Driver"); //loading mysql driver 
             } catch (ClassNotFoundException e) {
+                JOptionPane.showMessageDialog(null, "JDBC Driver class is missing", "Error", JOptionPane.ERROR_MESSAGE);
                 e.printStackTrace();
             }
             con = (Connection) DriverManager.getConnection(url, username, password); //attempting to connect to MySQL database
             System.out.println("Printing connection object " + con);
         } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Database connection error", "Error", JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
         }
         return con;
