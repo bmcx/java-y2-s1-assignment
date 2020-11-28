@@ -14,12 +14,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package medcenter;
+
+import com.formdev.flatlaf.FlatDarkLaf;
+import medcenter.views.Home;
 
 /**
  *
- * @author 2B
+ * @author Chandima Bandara
  */
 public class MedCenter {
 
@@ -27,7 +29,9 @@ public class MedCenter {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+        FlatDarkLaf.install();
+        new Home().setVisible(true);
         // TODO code application logic here
     }
-    
+
 }
