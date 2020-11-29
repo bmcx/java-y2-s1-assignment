@@ -126,6 +126,18 @@ public class UserController {
         return doctors;
     }
 
+    public void editDoctor(int doctorId, String col, String value) {
+
+        try {
+            Statement stmt = (Statement) con.createStatement();
+            stmt.executeUpdate("UPDATE user SET " + col + "='" + value + "' WHERE id=" + doctorId + ";");
+            System.out.println("User data updated");
+        } catch (SQLException ex) {
+            Logger.getLogger(AuthController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }
+
     @Override
     protected void finalize() throws Throwable {
         try {

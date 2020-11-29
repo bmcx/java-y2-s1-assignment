@@ -29,13 +29,21 @@ import javax.swing.JOptionPane;
 import javax.swing.ListCellRenderer;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
+import javax.swing.event.CellEditorListener;
+import javax.swing.event.ChangeEvent;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 import medcenter.controller.AuthController;
 import medcenter.controller.BookingController;
 import medcenter.controller.ScheduleController;
+import medcenter.controller.UserController;
 import medcenter.helpers.UserDataInFile;
 import medcenter.models.Booking;
+import medcenter.models.Doctor;
 import medcenter.models.Schedule;
 import medcenter.models.User;
 import medcenter.models.types.DataNotFoundException;
@@ -51,11 +59,14 @@ public class StaffHome extends javax.swing.JFrame {
     ListSelectionListener bookingsSelectionListener;
     ScheduleController scheduleController = new ScheduleController();
     DefaultListModel timeSlotsModel = new DefaultListModel();
+    UserController userController;
+    ActionListener taskPerformer;
 
     /**
      * Creates new form StaffHome
      */
     public StaffHome() {
+        this.userController = new UserController();
         this.taskPerformer = new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 btnDeleteBooking.setEnabled(lstBookings.getSelectedIndex() != -1);
@@ -65,6 +76,8 @@ public class StaffHome extends javax.swing.JFrame {
         initComponents();
         setCurrentUser();
         drawTimeSlotList();
+        initDoctorsData();
+
         Timer timer = new Timer(100, taskPerformer);
         timer.setRepeats(true);
         timer.start();
@@ -118,23 +131,50 @@ public class StaffHome extends javax.swing.JFrame {
 
     }
 
-    private void initBookingListListner() {
-
-        this.bookingsSelectionListener = (ListSelectionEvent listSelectionEvent) -> {
-            boolean adjust = listSelectionEvent.getValueIsAdjusting();
-            if (!adjust) {
-                try {
-                    JList list = (JList) listSelectionEvent.getSource();
-                    Object selectionValue = list.getSelectedValue();
-                    Schedule selected = (Schedule) selectionValue;
-
-                } catch (Exception Ex) {
-
+    private void initDoctorsData() {
+        String[] columnNames = {"Id", "Username", "Firstname", "Lastname", "Title", "Description"};
+        DefaultTableModel tableModel = new DefaultTableModel(columnNames, 0);
+        List<Doctor> doctors = this.userController.fetchAllDoctors();
+        doctors.forEach((item) -> tableModel.addRow(getRow(item)));
+        tblDoctors.setModel(tableModel);
+        tblDoctors.putClientProperty("terminateEditOnFocusLost", true);
+        tableModel.addTableModelListener(new TableModelListener() {
+            @Override
+            public void tableChanged(TableModelEvent e) {
+                if (e.getType() == TableModelEvent.UPDATE) {
+                    DefaultTableModel tableModel = (DefaultTableModel) ((TableModel) (e.getSource()));
+                    int row = e.getFirstRow();
+                    int column = e.getColumn();
+                    int id = Integer.parseInt(tableModel.getValueAt(row, 0).toString());
+                    String data = String.valueOf(tableModel.getValueAt(tblDoctors.getSelectedRow(), tblDoctors.getSelectedColumn()));
+                    userController.editDoctor(id, columnNames[column].toLowerCase(), data);
                 }
             }
-        };
+        });
+//        tblDoctors.getDefaultEditor(String.class).addCellEditorListener(ChangeNotification);
     }
-    ActionListener taskPerformer;
+
+    protected void actualizatabla(TableModelEvent e) {
+
+    }
+
+    private String[] getRow(Doctor doctor) {
+        String[] data = {Integer.toString(doctor.getId()), doctor.getUsername(), doctor.getFirstname(), doctor.getLastname(), doctor.getTitle(), doctor.getDescription()};
+        return data;
+    }
+
+    CellEditorListener ChangeNotification = new CellEditorListener() {
+        @Override
+        public void editingCanceled(ChangeEvent e) {
+            System.out.println("The user canceled editing.");
+        }
+
+        @Override
+        public void editingStopped(ChangeEvent e) {
+
+            System.out.println(e);
+        }
+    };
 
     private void drawBookingsList(List<Booking> bookings) {
         DefaultListModel model = new DefaultListModel();
@@ -173,7 +213,8 @@ public class StaffHome extends javax.swing.JFrame {
         jLabel6 = new javax.swing.JLabel();
         btnRefresh = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
-        jPanel4 = new javax.swing.JPanel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        tblDoctors = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("MedCenter | Staff ");
@@ -301,43 +342,44 @@ public class StaffHome extends javax.swing.JFrame {
                     .addComponent(btnRefresh))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lstBookings, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 256, Short.MAX_VALUE)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(btnAddBooking)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(btnDeleteBooking)
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 336, Short.MAX_VALUE)
+                    .addComponent(lstBookings, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
         jTabbedPane2.addTab("Booking", jPanel2);
 
+        tblDoctors.setAutoCreateRowSorter(true);
+        tblDoctors.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        jScrollPane2.setViewportView(tblDoctors);
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 832, Short.MAX_VALUE)
+            .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 832, Short.MAX_VALUE)
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 306, Short.MAX_VALUE)
+            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 390, Short.MAX_VALUE)
         );
 
         jTabbedPane2.addTab("Doctors", jPanel3);
-
-        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
-        jPanel4.setLayout(jPanel4Layout);
-        jPanel4Layout.setHorizontalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 832, Short.MAX_VALUE)
-        );
-        jPanel4Layout.setVerticalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 306, Short.MAX_VALUE)
-        );
-
-        jTabbedPane2.addTab("Students", jPanel4);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -386,7 +428,6 @@ public class StaffHome extends javax.swing.JFrame {
                 bookingController.deleteBooking(selected.getId());
                 refresh();
             }
-
         }
     }//GEN-LAST:event_btnDeleteBookingActionPerformed
 
@@ -413,11 +454,12 @@ public class StaffHome extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
-    private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTabbedPane jTabbedPane2;
     private javax.swing.JLabel lblUsername;
     private javax.swing.JList lstBookings;
     private javax.swing.JList lstTimeSlots;
+    private javax.swing.JTable tblDoctors;
     // End of variables declaration//GEN-END:variables
 }
