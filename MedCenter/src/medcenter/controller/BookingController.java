@@ -49,8 +49,8 @@ public class BookingController {
             while (rs.next()) {
 
                 int id = rs.getInt("id");
-                Doctor doctor = userController.fetchDoctor(rs.getInt("doctorId"));
-                Student student = userController.fetchStudent(rs.getInt("studentId"));
+                Doctor doctor = userController.fetchDoctorById(rs.getInt("doctorId"));
+                Student student = userController.fetchStudentById(rs.getInt("studentId"));
                 int scheduleId = rs.getInt("scheduleId");
                 CommonTypes.BookingStatus status = CommonTypes.BookingStatus.valueOf(rs.getString("status"));
                 LocalDateTime createdAt = rs.getTimestamp("createdAt").toLocalDateTime();
@@ -66,6 +66,30 @@ public class BookingController {
         return list;
     }
 
+    public void addBooking(int doctorId, int studentId, int scheduleId) {
+
+        try {
+            Statement stmt = (Statement) con.createStatement();
+            stmt.executeUpdate("INSERT INTO booking(doctorId, studentId, scheduleId) VALUES ('" + doctorId + "','" + studentId + "','" + scheduleId + "');");
+
+        } catch (SQLException ex) {
+            Logger.getLogger(AuthController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }
+
+    public void deleteBooking(int bookingId) {
+
+        try {
+            Statement stmt = (Statement) con.createStatement();
+            stmt.executeUpdate("DELETE FROM booking WHERE id='" + bookingId + "';");
+
+        } catch (SQLException ex) {
+            Logger.getLogger(AuthController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }
+
     public List<Booking> fetchBookingsByScheduleId(int scheduleId) {
         List<Booking> list = new ArrayList<>();
         UserController userController = new UserController();
@@ -76,8 +100,8 @@ public class BookingController {
             while (rs.next()) {
 
                 int id = rs.getInt("id");
-                Doctor doctor = userController.fetchDoctor(rs.getInt("doctorId"));
-                Student student = userController.fetchStudent(rs.getInt("studentId"));
+                Doctor doctor = userController.fetchDoctorById(rs.getInt("doctorId"));
+                Student student = userController.fetchStudentById(rs.getInt("studentId"));
                 CommonTypes.BookingStatus status = CommonTypes.BookingStatus.valueOf(rs.getString("status"));
                 LocalDateTime createdAt = rs.getTimestamp("createdAt").toLocalDateTime();
 

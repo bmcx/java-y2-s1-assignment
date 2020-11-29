@@ -20,6 +20,8 @@ import com.mysql.jdbc.Connection;
 import com.mysql.jdbc.Statement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import medcenter.helpers.Database;
@@ -37,7 +39,7 @@ public class UserController {
 
     Connection con = Database.createConnection();
 
-    public Student fetchStudent(int userId) throws DataNotFoundException {
+    public Student fetchStudentById(int userId) throws DataNotFoundException {
         try {
             Statement stmt = (Statement) con.createStatement();
             ResultSet rs = stmt.executeQuery("SELECT * FROM user WHERE id='" + userId + "';");
@@ -58,7 +60,7 @@ public class UserController {
         throw new DataNotFoundException();
     }
 
-    public Doctor fetchDoctor(int userId) throws DataNotFoundException {
+    public Doctor fetchDoctorById(int userId) throws DataNotFoundException {
         try {
             Statement stmt = (Statement) con.createStatement();
             ResultSet rs = stmt.executeQuery("SELECT * FROM user WHERE id='" + userId + "';");
@@ -69,8 +71,9 @@ public class UserController {
                 String firstname = rs.getString("firstname");
                 String lastname = rs.getString("lastname");
                 String username = rs.getString("username");
-
-                return new Doctor(id, firstname, lastname, username);
+                String title = rs.getString("title");
+                String description = rs.getString("description");
+                return new Doctor(id, firstname, lastname, username, title, description);
 
             }
         } catch (SQLException ex) {
@@ -79,7 +82,7 @@ public class UserController {
         throw new DataNotFoundException();
     }
 
-    public User fetchUser(int userId) throws DataNotFoundException {
+    public User fetchUserById(int userId) throws DataNotFoundException {
         try {
             Statement stmt = (Statement) con.createStatement();
             ResultSet rs = stmt.executeQuery("SELECT * FROM user WHERE id='" + userId + "';");
@@ -100,6 +103,27 @@ public class UserController {
             Logger.getLogger(AuthController.class.getName()).log(Level.SEVERE, null, ex);
         }
         throw new DataNotFoundException();
+    }
+
+    public List<Doctor> fetchAllDoctors() {
+        List<Doctor> doctors = new ArrayList<>();
+        try {
+            Statement stmt = (Statement) con.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT * FROM user WHERE role='DOCTOR';");
+
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                String firstname = rs.getString("firstname");
+                String lastname = rs.getString("lastname");
+                String username = rs.getString("username");
+                String title = rs.getString("title");
+                String description = rs.getString("description");
+                doctors.add(new Doctor(id, firstname, lastname, username, title, description));
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(AuthController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return doctors;
     }
 
     @Override

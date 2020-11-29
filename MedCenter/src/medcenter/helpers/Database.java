@@ -39,7 +39,7 @@ public class Database {
                 e.printStackTrace();
             }
             con = (Connection) DriverManager.getConnection(url, username, password); //attempting to connect to MySQL database
-            System.out.println("Printing connection object " + con);
+//            System.out.println("Printing connection object " + con);
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Database connection error", "Error", JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();

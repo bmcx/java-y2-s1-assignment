@@ -16,6 +16,10 @@
  */
 package medcenter.views;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -23,6 +27,8 @@ import javax.swing.DefaultListModel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.ListCellRenderer;
+import javax.swing.SwingUtilities;
+import javax.swing.Timer;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import medcenter.controller.AuthController;
@@ -49,13 +55,33 @@ public class StaffHome extends javax.swing.JFrame {
      * Creates new form StaffHome
      */
     public StaffHome() {
+        this.taskPerformer = new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                btnDeleteBooking.setEnabled(lstBookings.getSelectedIndex() != -1);
+            }
+        };
         initTimeSlotListListner();
         initComponents();
         setCurrentUser();
         drawTimeSlotList();
+        Timer timer = new Timer(100, taskPerformer);
+        timer.setRepeats(true);
+        timer.start();
     }
 
     private void setCurrentUser() {
+        this.addFocusListener(new FocusListener() {
+
+            @Override
+            public void focusGained(FocusEvent e) {
+                System.out.println("got"); //To change body of generated methods, choose Tools | Templates.
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                System.out.println("lost");//To change body of generated methods, choose Tools | Templates.
+            }
+        });
         User currentUser = new UserDataInFile().retriveUserData();
         lblUsername.setText(currentUser.getFirstname() + " " + currentUser.getLastname());
     }
@@ -91,6 +117,24 @@ public class StaffHome extends javax.swing.JFrame {
 
     }
 
+    private void initBookingListListner() {
+
+        this.bookingsSelectionListener = (ListSelectionEvent listSelectionEvent) -> {
+            boolean adjust = listSelectionEvent.getValueIsAdjusting();
+            if (!adjust) {
+                try {
+                    JList list = (JList) listSelectionEvent.getSource();
+                    Object selectionValue = list.getSelectedValue();
+                    Schedule selected = (Schedule) selectionValue;
+
+                } catch (Exception Ex) {
+
+                }
+            }
+        };
+    }
+    ActionListener taskPerformer;
+
     private void drawBookingsList(List<Booking> bookings) {
         DefaultListModel model = new DefaultListModel();
 
@@ -124,13 +168,14 @@ public class StaffHome extends javax.swing.JFrame {
         lstBookings = new javax.swing.JList();
         jLabel5 = new javax.swing.JLabel();
         btnAddBooking = new javax.swing.JButton();
-        btnEditBooking = new javax.swing.JButton();
         btnDeleteBooking = new javax.swing.JButton();
         jLabel6 = new javax.swing.JLabel();
+        btnRefresh = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jPanel4 = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("MedCenter | Staff ");
         setLocation(new java.awt.Point(0, 0));
 
         jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
@@ -201,14 +246,6 @@ public class StaffHome extends javax.swing.JFrame {
             }
         });
 
-        btnEditBooking.setText("Edit");
-        btnEditBooking.setEnabled(false);
-        btnEditBooking.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnEditBookingActionPerformed(evt);
-            }
-        });
-
         btnDeleteBooking.setText("Delete");
         btnDeleteBooking.setEnabled(false);
         btnDeleteBooking.addActionListener(new java.awt.event.ActionListener() {
@@ -219,6 +256,14 @@ public class StaffHome extends javax.swing.JFrame {
 
         jLabel6.setText("Actions");
 
+        btnRefresh.setFont(new java.awt.Font("Dialog", 1, 10)); // NOI18N
+        btnRefresh.setText("Refresh");
+        btnRefresh.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRefreshActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -226,7 +271,11 @@ public class StaffHome extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel4)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jLabel4)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnRefresh)
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 382, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -237,8 +286,7 @@ public class StaffHome extends javax.swing.JFrame {
                     .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                         .addComponent(btnDeleteBooking, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(btnAddBooking, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jLabel6)
-                    .addComponent(btnEditBooking, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel6))
                 .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
@@ -248,15 +296,14 @@ public class StaffHome extends javax.swing.JFrame {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
                     .addComponent(jLabel5)
-                    .addComponent(jLabel6))
+                    .addComponent(jLabel6)
+                    .addComponent(btnRefresh))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(lstBookings, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 264, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 256, Short.MAX_VALUE)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(btnAddBooking)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(btnEditBooking)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(btnDeleteBooking)
                         .addGap(0, 0, Short.MAX_VALUE)))
@@ -318,57 +365,35 @@ public class StaffHome extends javax.swing.JFrame {
     }//GEN-LAST:event_btnLogoutActionPerformed
 
     private void btnAddBookingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddBookingActionPerformed
-        drawTimeSlotList();        // TODO add your handling code here:
-    }//GEN-LAST:event_btnAddBookingActionPerformed
+        Schedule selected = (Schedule) lstTimeSlots.getSelectedValue();
+        if (selected == null) {
+            JOptionPane.showMessageDialog(null, "Please select a time slot to add a booking", "Time slot not selected!", JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            AddBooking addBooking = new AddBooking(selected);
+            addBooking.setLocationRelativeTo(null);
+            addBooking.setVisible(true);
+        }
 
-    private void btnEditBookingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditBookingActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btnEditBookingActionPerformed
+    }//GEN-LAST:event_btnAddBookingActionPerformed
 
     private void btnDeleteBookingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteBookingActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_btnDeleteBookingActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(StaffHome.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(StaffHome.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(StaffHome.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(StaffHome.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
+    private void btnRefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefreshActionPerformed
+       DefaultListModel emptyModel = new DefaultListModel();
+        drawTimeSlotList();
+        lstBookings.clearSelection();
+        lstBookings.setModel(emptyModel);
+        
+    }//GEN-LAST:event_btnRefreshActionPerformed
 
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new StaffHome().setVisible(true);
-            }
-        });
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAddBooking;
     private javax.swing.JButton btnDeleteBooking;
-    private javax.swing.JButton btnEditBooking;
     private javax.swing.JButton btnLogout;
+    private javax.swing.JButton btnRefresh;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;

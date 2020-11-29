@@ -24,13 +24,34 @@ import static medcenter.models.types.CommonTypes.UserRole.DOCTOR;
  */
 public class Doctor extends User {
 
-    public Doctor(int id, String firstname, String lastname, String username) {
+    String title;
+    String description;
+
+    public Doctor(int id, String firstname, String lastname, String username, String title, String description) {
         super(id, firstname, lastname, username, DOCTOR);
+        this.title = !title.isEmpty() ? title : "N/A";;
+        this.description = !description.isEmpty() ? description : "N/A";
     }
 
     @Override
     public String getName() {
         return String.format("Dr. %s %s", this.firstname, this.lastname);
-    }   
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
 }

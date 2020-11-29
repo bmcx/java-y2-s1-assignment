@@ -52,7 +52,7 @@ public class ScheduleController {
             while (rs.next()) {
 
                 int id = rs.getInt("id");
-                Doctor doctor = userController.fetchDoctor(rs.getInt("doctorId"));
+                Doctor doctor = userController.fetchDoctorById(rs.getInt("doctorId"));
                 LocalDate day = rs.getDate("day").toLocalDate();
                 LocalTime from = rs.getTime("timeFrom").toLocalTime();
                 LocalTime to = rs.getTime("timeTo").toLocalTime();
@@ -80,7 +80,7 @@ public class ScheduleController {
             while (rs.next()) {
 
                 int id = rs.getInt("id");
-                Doctor doctor = userController.fetchDoctor(rs.getInt("doctorId"));
+                Doctor doctor = userController.fetchDoctorById(rs.getInt("doctorId"));
                 LocalDate day = rs.getDate("day").toLocalDate();
                 LocalTime from = rs.getTime("timeFrom").toLocalTime();
                 LocalTime to = rs.getTime("timeTo").toLocalTime();
@@ -107,7 +107,7 @@ public class ScheduleController {
             if (rs.first()) {
 
                 int id = rs.getInt("id");
-                Doctor doctor = userController.fetchDoctor(rs.getInt("doctorId"));
+                Doctor doctor = userController.fetchDoctorById(rs.getInt("doctorId"));
                 LocalDate day = rs.getDate("day").toLocalDate();
                 LocalTime from = rs.getTime("timeFrom").toLocalTime();
                 LocalTime to = rs.getTime("timeTo").toLocalTime();
@@ -132,7 +132,7 @@ public class ScheduleController {
             while (rs.next()) {
 
                 int id = rs.getInt("id");
-                Doctor doctor = userController.fetchDoctor(rs.getInt("doctorId"));
+                Doctor doctor = userController.fetchDoctorById(rs.getInt("doctorId"));
                 LocalDate day = rs.getDate("day").toLocalDate();
                 LocalTime from = rs.getTime("timeFrom").toLocalTime();
                 LocalTime to = rs.getTime("timeTo").toLocalTime();

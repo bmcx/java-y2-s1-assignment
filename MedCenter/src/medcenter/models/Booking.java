@@ -87,7 +87,7 @@ public class Booking {
 
     @Override
     public String toString() {
-        return "Booking id: " + Integer.toString(id);
+        return String.format("[%s] %s", this.status.name(), this.student.getName());
     }
 
 }
