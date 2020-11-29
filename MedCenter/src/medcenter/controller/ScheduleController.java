@@ -68,6 +68,7 @@ public class ScheduleController {
         }
         return list;
     }
+
     public List<Schedule> fetchAllActive() {
         List<Schedule> list = new ArrayList<>();
         UserController userController = new UserController();
@@ -95,7 +96,6 @@ public class ScheduleController {
         }
         return list;
     }
-    
 
     public Schedule fetchScheduleById(int scheduleId) throws DataNotFoundException {
 
@@ -148,4 +148,14 @@ public class ScheduleController {
         }
         return list;
     }
+
+    @Override
+    protected void finalize() throws Throwable {
+        try {
+            con.close();
+        } finally {
+            super.finalize();
+        }
+    }
+
 }

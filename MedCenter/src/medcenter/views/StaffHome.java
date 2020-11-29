@@ -20,8 +20,11 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.ListCellRenderer;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import medcenter.controller.AuthController;
 import medcenter.controller.ScheduleController;
 import medcenter.helpers.UserDataInFile;
@@ -34,35 +37,52 @@ import medcenter.models.types.DataNotFoundException;
  * @author Chandima Bandara
  */
 public class StaffHome extends javax.swing.JFrame {
-    
+
     private AuthController authController = new AuthController();
-    
-    ;
+    ListSelectionListener listSelectionListener;
 
     /**
      * Creates new form StaffHome
      */
     public StaffHome() {
+        initTimeSlotListListner();
         initComponents();
         setCurrentUser();
-        drawList();
+        drawTimeSlotList();
     }
-    
+
     private void setCurrentUser() {
         User currentUser = new UserDataInFile().retriveUserData();
         lblUsername.setText(currentUser.getFirstname() + " " + currentUser.getLastname());
     }
-    
-    private void drawList() {
+
+    private void drawTimeSlotList() {
         ScheduleController scheduleController = new ScheduleController();
         DefaultListModel model = new DefaultListModel();
-        
+
         List<Schedule> schedules = scheduleController.fetchAll();
         schedules.forEach((schedule) -> model.addElement(schedule));
-        
+
         lstTimeSlots.setModel(model);
         ListCellRenderer renderer = new BookingTitleListCellRenderer();
         lstTimeSlots.setCellRenderer(renderer);
+        lstTimeSlots.addListSelectionListener(listSelectionListener);
+
+    }
+
+    private void initTimeSlotListListner() {
+        this.listSelectionListener = (ListSelectionEvent listSelectionEvent) -> {
+            boolean adjust = listSelectionEvent.getValueIsAdjusting();
+            if (!adjust) {
+                JList list = (JList) listSelectionEvent.getSource();
+                Object selectionValue = list.getSelectedValue();
+                Schedule selected = (Schedule) selectionValue;
+
+                System.out.print(selected.getBookings().size() + " ");
+
+                System.out.println();
+            }
+        };
     }
 
     /**

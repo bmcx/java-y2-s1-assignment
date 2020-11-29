@@ -43,7 +43,7 @@ class BookingTitleListCellRenderer implements ListCellRenderer<Schedule> {
     @Override
     public Component getListCellRendererComponent(JList<? extends Schedule> list, Schedule value, int index, boolean isSelected, boolean cellHasFocus) {
         JLabel renderer = (JLabel) defaultRenderer.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-        renderer.setBorder(cellHasFocus ? focusBorder : noFocusBorder);
+        renderer.setBorder(noFocusBorder);
         return renderer;
 
     }

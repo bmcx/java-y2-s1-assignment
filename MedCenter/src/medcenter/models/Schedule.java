@@ -50,7 +50,7 @@ public class Schedule {
 
     @Override
     public String toString() {
-        return this.day.toString() + " " + this.from.toString() + "-" + this.to.toString();
+        return String.format("%s %50s, %s-%s", this.doctor.getName(), this.day.toString(), this.from.toString(), this.to.toString());
     }
 
     public void fetchBookings() {
