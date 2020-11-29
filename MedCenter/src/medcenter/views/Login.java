@@ -16,11 +16,9 @@
  */
 package medcenter.views;
 
-import com.mysql.jdbc.CommunicationsException;
 import javax.swing.JOptionPane;
 import medcenter.controller.AuthController;
 import medcenter.models.User;
-import static medcenter.models.types.CommonTypes.UserRole.*;
 import medcenter.models.types.InvalidLoginData;
 
 /**

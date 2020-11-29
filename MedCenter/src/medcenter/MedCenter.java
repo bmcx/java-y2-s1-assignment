@@ -17,7 +17,13 @@
 package medcenter;
 
 import com.formdev.flatlaf.FlatDarkLaf;
+import javax.swing.JOptionPane;
+import medcenter.helpers.UserDataInFile;
+import medcenter.models.User;
+import medcenter.views.DoctorHome;
 import medcenter.views.Login;
+import medcenter.views.StaffHome;
+import medcenter.views.StudentHome;
 
 /**
  *
@@ -30,10 +36,35 @@ public class MedCenter {
      */
     public static void main(String[] args) {
         FlatDarkLaf.install();
+        try {
+            User currentUser = new UserDataInFile().retriveUserData();
+            switch (currentUser.getRole()) {
+                case "DOCTOR":
+                    DoctorHome doctorHome = new DoctorHome();
+                    doctorHome.setLocationRelativeTo(null);
+                    doctorHome.setVisible(true);
+                    break;
 
-        Login login = new Login();
-        login.setLocationRelativeTo(null);
-        login.setVisible(true);
+                case "STUDENT":
+                    StudentHome studentHome = new StudentHome();
+                    studentHome.setLocationRelativeTo(null);
+                    studentHome.setVisible(true);
+                    break;
+
+                case "STAFF":
+                    StaffHome staffHome = new StaffHome();
+                    staffHome.setLocationRelativeTo(null);
+                    staffHome.setVisible(true);
+                    break;
+                default:
+                    JOptionPane.showMessageDialog(null, "There might be an error,Please restart the application", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (Exception Ex) {
+            Login login = new Login();
+            login.setLocationRelativeTo(null);
+            login.setVisible(true);
+        }
+
     }
 
 }

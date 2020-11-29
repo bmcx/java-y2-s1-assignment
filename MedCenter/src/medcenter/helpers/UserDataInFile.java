@@ -63,7 +63,7 @@ public class UserDataInFile implements PersistUserData {
     @Override
     public User retriveUserData() {
 
-        Object obj = null;
+        Object obj;
         try {
             FileReader f = new FileReader(filename);
             obj = new JSONParser().parse(f);
@@ -74,7 +74,6 @@ public class UserDataInFile implements PersistUserData {
             Logger.getLogger(UserDataInFile.class.getName()).log(Level.SEVERE, null, ex);
             return null;
         }
-        // typecasting obj to JSONObject 
         JSONObject jsonObj = (JSONObject) obj;
         int id = (int) (long) jsonObj.get("id");
         String firstname = (String) jsonObj.get("firstName");
