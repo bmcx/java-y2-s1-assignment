@@ -79,7 +79,7 @@ public class BookingController {
                 Doctor doctor = userController.fetchDoctor(rs.getInt("doctorId"));
                 Student student = userController.fetchStudent(rs.getInt("studentId"));
                 CommonTypes.BookingStatus status = CommonTypes.BookingStatus.valueOf(rs.getString("status"));
-                LocalDateTime createdAt = rs.getTimestamp("DispatchDate").toLocalDateTime();
+                LocalDateTime createdAt = rs.getTimestamp("createdAt").toLocalDateTime();
 
                 Booking booking = new Booking(id, doctor, student, scheduleId, status, createdAt);
                 list.add(booking);

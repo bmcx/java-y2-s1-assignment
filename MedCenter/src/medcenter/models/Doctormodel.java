@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package medcenter.models;
 
 /**
@@ -11,15 +10,15 @@ package medcenter.models;
  * @author ThesunonG
  */
 public class Doctormodel {
+
     String name;
     double contact;
     String password;
     String Email;
     String Specialization;
-    
+
     //public Doctormodel(){}
-    public Doctormodel (String name,double contact,String password,String Email,String Specialization)
-    {
+    public Doctormodel(String name, double contact, String password, String Email, String Specialization) {
         this.name = name;
         this.contact = contact;
         this.password = password;
@@ -68,9 +67,9 @@ public class Doctormodel {
     }
 
     // class main
-    public static void main(String [] agrs){
+    public static void main(String[] agrs) {
          //Doctormodel obj= new Doctormodel();
-         //obj.name("hhy");
-         //System.out.println(obj.name());
+        //obj.name("hhy");
+        //System.out.println(obj.name());
     }
-
+}

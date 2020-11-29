@@ -16,21 +16,27 @@
  */
 package medcenter.views;
 
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
 import javax.swing.ListCellRenderer;
 import medcenter.controller.AuthController;
+import medcenter.controller.ScheduleController;
 import medcenter.helpers.UserDataInFile;
+import medcenter.models.Schedule;
 import medcenter.models.User;
+import medcenter.models.types.DataNotFoundException;
 
 /**
  *
  * @author Chandima Bandara
  */
 public class StaffHome extends javax.swing.JFrame {
-
+    
     private AuthController authController = new AuthController();
-
+    
     ;
 
     /**
@@ -41,18 +47,19 @@ public class StaffHome extends javax.swing.JFrame {
         setCurrentUser();
         drawList();
     }
-
+    
     private void setCurrentUser() {
         User currentUser = new UserDataInFile().retriveUserData();
         lblUsername.setText(currentUser.getFirstname() + " " + currentUser.getLastname());
     }
-
+    
     private void drawList() {
+        ScheduleController scheduleController = new ScheduleController();
         DefaultListModel model = new DefaultListModel();
-        model.ensureCapacity(100);
-        for (int i = 0; i < 100; i++) {
-            model.addElement(Integer.toString(i));
-        }
+        
+        List<Schedule> schedules = scheduleController.fetchAll();
+        schedules.forEach((schedule) -> model.addElement(schedule));
+        
         lstTimeSlots.setModel(model);
         ListCellRenderer renderer = new BookingTitleListCellRenderer();
         lstTimeSlots.setCellRenderer(renderer);

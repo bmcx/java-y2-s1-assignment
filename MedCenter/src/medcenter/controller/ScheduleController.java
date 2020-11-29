@@ -42,6 +42,61 @@ public class ScheduleController {
 
     Connection con = Database.createConnection();
 
+    public List<Schedule> fetchAll() {
+        List<Schedule> list = new ArrayList<>();
+        UserController userController = new UserController();
+        try {
+            Statement stmt = (Statement) con.createStatement();
+            ResultSet rs = stmt.executeQuery("SELECT * FROM schedule ORDER BY day DESC, timeFrom ASC;");
+
+            while (rs.next()) {
+
+                int id = rs.getInt("id");
+                Doctor doctor = userController.fetchDoctor(rs.getInt("doctorId"));
+                LocalDate day = rs.getDate("day").toLocalDate();
+                LocalTime from = rs.getTime("timeFrom").toLocalTime();
+                LocalTime to = rs.getTime("timeTo").toLocalTime();
+                int maxBookingCount = rs.getInt("maxCount");
+
+                Schedule schedule = new Schedule(id, doctor, day, from, to, maxBookingCount);
+                list.add(schedule);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(AuthController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (DataNotFoundException ex) {
+            Logger.getLogger(ScheduleController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return list;
+    }
+    public List<Schedule> fetchAllActive() {
+        List<Schedule> list = new ArrayList<>();
+        UserController userController = new UserController();
+        try {
+            Statement stmt = (Statement) con.createStatement();
+            //only fetch today's and future schedules
+            ResultSet rs = stmt.executeQuery("SELECT * FROM schedule WHERE day >= CURRENT_DATE() ORDER BY day DESC, timeFrom ASC;");
+
+            while (rs.next()) {
+
+                int id = rs.getInt("id");
+                Doctor doctor = userController.fetchDoctor(rs.getInt("doctorId"));
+                LocalDate day = rs.getDate("day").toLocalDate();
+                LocalTime from = rs.getTime("timeFrom").toLocalTime();
+                LocalTime to = rs.getTime("timeTo").toLocalTime();
+                int maxBookingCount = rs.getInt("maxCount");
+
+                Schedule schedule = new Schedule(id, doctor, day, from, to, maxBookingCount);
+                list.add(schedule);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(AuthController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (DataNotFoundException ex) {
+            Logger.getLogger(ScheduleController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return list;
+    }
+    
+
     public Schedule fetchScheduleById(int scheduleId) throws DataNotFoundException {
 
         UserController userController = new UserController();

@@ -48,13 +48,14 @@ public class Schedule {
         this.fetchBookings();
     }
 
+    @Override
+    public String toString() {
+        return this.day.toString() + " " + this.from.toString() + "-" + this.to.toString();
+    }
+
     public void fetchBookings() {
         BookingController bookings = new BookingController();
-        try {
-            this.bookings = bookings.fetchBookingsByScheduleId(this.id);
-        } catch (DataNotFoundException ex) {
-            Logger.getLogger(Schedule.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        this.bookings = bookings.fetchBookingsByScheduleId(this.id);
     }
 
     public int getId() {
