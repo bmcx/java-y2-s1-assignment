@@ -151,7 +151,6 @@ public class StaffHome extends javax.swing.JFrame {
                 }
             }
         });
-//        tblDoctors.getDefaultEditor(String.class).addCellEditorListener(ChangeNotification);
     }
 
     protected void actualizatabla(TableModelEvent e) {
@@ -162,19 +161,6 @@ public class StaffHome extends javax.swing.JFrame {
         String[] data = {Integer.toString(doctor.getId()), doctor.getUsername(), doctor.getFirstname(), doctor.getLastname(), doctor.getTitle(), doctor.getDescription()};
         return data;
     }
-
-    CellEditorListener ChangeNotification = new CellEditorListener() {
-        @Override
-        public void editingCanceled(ChangeEvent e) {
-            System.out.println("The user canceled editing.");
-        }
-
-        @Override
-        public void editingStopped(ChangeEvent e) {
-
-            System.out.println(e);
-        }
-    };
 
     private void drawBookingsList(List<Booking> bookings) {
         DefaultListModel model = new DefaultListModel();
