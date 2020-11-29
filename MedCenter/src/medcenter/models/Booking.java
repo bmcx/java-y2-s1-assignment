@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 MSI GV62 8RE
+ * Copyright (C) 2020 Chandima Bandara
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -14,18 +14,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package medcenter.models;
 
-import static medcenter.models.types.CommonTypes.UserRole.STAFF;
+package medcenter.models;
 
 /**
  *
- * @author MSI GV62 8RE
+ * @author Chandima Bandara
  */
-public class Staff extends User {
-
-    public Staff(int id, String firstname, String lastname, String username) {
-        super(id, firstname, lastname, username, STAFF);
-    }
-
+public class Booking {
+    
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 MSI GV62 8RE
+ * Copyright (C) 2020 Chandima Bandara
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -16,16 +16,15 @@
  */
 package medcenter.models;
 
-import static medcenter.models.types.CommonTypes.UserRole.STAFF;
+import static medcenter.models.types.CommonTypes.UserRole.STUDENT;
 
 /**
  *
- * @author MSI GV62 8RE
+ * @author Chandima Bandara
  */
-public class Staff extends User {
+public class Student extends User {
 
-    public Staff(int id, String firstname, String lastname, String username) {
-        super(id, firstname, lastname, username, STAFF);
+    public Student(int id, String firstname, String lastname, String username) {
+        super(id, firstname, lastname, username, STUDENT);
     }
-
 }
