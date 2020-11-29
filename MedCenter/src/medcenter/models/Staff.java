@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 MSI GV62 8RE
+ * Copyright (C) 2020 Senal Ransika
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,7 +21,7 @@ import static medcenter.models.types.CommonTypes.UserRole.STAFF;
 
 /**
  *
- * @author MSI GV62 8RE
+ * @author Senal Ransika
  */
 
     public class Staff extends User {
