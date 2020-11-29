@@ -20,13 +20,16 @@ import com.mysql.jdbc.Connection;
 import com.mysql.jdbc.Statement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import medcenter.helpers.Database;
 import medcenter.models.Booking;
 import medcenter.models.Doctor;
+import medcenter.models.Schedule;
 import medcenter.models.Student;
 import medcenter.models.types.CommonTypes;
 import medcenter.models.types.DataNotFoundException;
@@ -35,59 +38,58 @@ import medcenter.models.types.DataNotFoundException;
  *
  * @author Chandima Bandara
  */
-public class BookingController {
+public class ScheduleController {
 
     Connection con = Database.createConnection();
 
-    public List<Booking> fetchBookingsByDoctorId(int doctorId) {
-        List<Booking> list = new ArrayList<>();
+    public Schedule fetchScheduleById(int scheduleId) throws DataNotFoundException {
+
         UserController userController = new UserController();
         try {
             Statement stmt = (Statement) con.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT * FROM booking WHERE doctorId='" + doctorId + "';");
+            ResultSet rs = stmt.executeQuery("SELECT * FROM schedule WHERE id='" + scheduleId + "';");
 
-            while (rs.next()) {
+            if (rs.first()) {
 
                 int id = rs.getInt("id");
                 Doctor doctor = userController.fetchDoctor(rs.getInt("doctorId"));
-                Student student = userController.fetchStudent(rs.getInt("studentId"));
-                int scheduleId = rs.getInt("scheduleId");
-                CommonTypes.BookingStatus status = CommonTypes.BookingStatus.valueOf(rs.getString("status"));
-                LocalDateTime createdAt = rs.getTimestamp("createdAt").toLocalDateTime();
+                LocalDate day = rs.getDate("day").toLocalDate();
+                LocalTime from = rs.getTime("timeFrom").toLocalTime();
+                LocalTime to = rs.getTime("timeTo").toLocalTime();
+                int maxBookingCount = rs.getInt("maxCount");
 
-                Booking booking = new Booking(id, doctor, student, scheduleId, status, createdAt);
-                list.add(booking);
+                return new Schedule(id, doctor, day, from, to, maxBookingCount);
             }
+
         } catch (SQLException ex) {
             Logger.getLogger(AuthController.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (DataNotFoundException ex) {
-            Logger.getLogger(BookingController.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return list;
+        throw new DataNotFoundException();
     }
 
-    public List<Booking> fetchBookingsByScheduleId(int scheduleId) {
-        List<Booking> list = new ArrayList<>();
+    public List<Schedule> fetchScheduleByDoctorId(int doctorId) {
+        List<Schedule> list = new ArrayList<>();
         UserController userController = new UserController();
         try {
             Statement stmt = (Statement) con.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT * FROM booking WHERE scheduleId='" + scheduleId + "';");
+            ResultSet rs = stmt.executeQuery("SELECT * FROM schedule WHERE doctorId='" + doctorId + "';");
 
             while (rs.next()) {
 
                 int id = rs.getInt("id");
                 Doctor doctor = userController.fetchDoctor(rs.getInt("doctorId"));
-                Student student = userController.fetchStudent(rs.getInt("studentId"));
-                CommonTypes.BookingStatus status = CommonTypes.BookingStatus.valueOf(rs.getString("status"));
-                LocalDateTime createdAt = rs.getTimestamp("DispatchDate").toLocalDateTime();
+                LocalDate day = rs.getDate("day").toLocalDate();
+                LocalTime from = rs.getTime("timeFrom").toLocalTime();
+                LocalTime to = rs.getTime("timeTo").toLocalTime();
+                int maxBookingCount = rs.getInt("maxCount");
 
-                Booking booking = new Booking(id, doctor, student, scheduleId, status, createdAt);
-                list.add(booking);
+                Schedule schedule = new Schedule(id, doctor, day, from, to, maxBookingCount);
+                list.add(schedule);
             }
         } catch (SQLException ex) {
             Logger.getLogger(AuthController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (DataNotFoundException ex) {
-            Logger.getLogger(BookingController.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ScheduleController.class.getName()).log(Level.SEVERE, null, ex);
         }
         return list;
     }

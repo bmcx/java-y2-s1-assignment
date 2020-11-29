@@ -19,7 +19,7 @@ package medcenter.views;
 import javax.swing.JOptionPane;
 import medcenter.controller.AuthController;
 import medcenter.models.User;
-import medcenter.models.types.InvalidLoginData;
+import medcenter.models.types.InvalidLoginDataException;
 
 /**
  *
@@ -191,7 +191,7 @@ public class Login extends javax.swing.JFrame {
                     JOptionPane.showMessageDialog(null, "There might be an error,Please restart the application", "Error", JOptionPane.ERROR_MESSAGE);
             }
 
-        } catch (InvalidLoginData ex) {
+        } catch (InvalidLoginDataException ex) {
             JOptionPane.showMessageDialog(null, "Username or password incorrect", "Error", JOptionPane.ERROR_MESSAGE);
         }
 

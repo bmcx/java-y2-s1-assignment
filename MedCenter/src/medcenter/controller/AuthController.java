@@ -25,7 +25,7 @@ import medcenter.helpers.Database;
 import medcenter.helpers.UserDataInFile;
 import medcenter.models.User;
 import medcenter.models.types.CommonTypes;
-import medcenter.models.types.InvalidLoginData;
+import medcenter.models.types.InvalidLoginDataException;
 
 /**
  *
@@ -39,10 +39,10 @@ public class AuthController {
     Connection con = Database.createConnection();
     UserDataInFile localData = new UserDataInFile();
 
-    public User loginUser(String username, String password) throws InvalidLoginData {
+    public User loginUser(String username, String password) throws InvalidLoginDataException {
         try {
             Statement stmt = (Statement) con.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT * FROM User WHERE username='" + username + "' AND password='" + password + "';");
+            ResultSet rs = stmt.executeQuery("SELECT * FROM user WHERE username='" + username + "' AND password='" + password + "';");
             if (rs.first()) {
                 int id = rs.getInt("id");;
                 String firstname = rs.getString("firstname");
@@ -55,7 +55,7 @@ public class AuthController {
         } catch (SQLException ex) {
             Logger.getLogger(AuthController.class.getName()).log(Level.SEVERE, null, ex);
         }
-        throw new InvalidLoginData();
+        throw new InvalidLoginDataException();
     }
 
     public void logout() {

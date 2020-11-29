@@ -14,13 +14,80 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package medcenter.models;
+
+import java.time.LocalDateTime;
+import medcenter.models.types.CommonTypes.BookingStatus;
 
 /**
  *
  * @author Chandima Bandara
  */
 public class Booking {
-    
+
+    int id;
+    Doctor doctor;
+    Student student;
+    int scheduleId;
+    BookingStatus status;
+    LocalDateTime createdAt;
+
+    public Booking(int id, Doctor doctor, Student student, int scheduleId, BookingStatus status, LocalDateTime createdAt) {
+        this.id = id;
+        this.doctor = doctor;
+        this.student = student;
+        this.scheduleId = scheduleId;
+        this.status = status;
+        this.createdAt = createdAt;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public Doctor getDoctor() {
+        return doctor;
+    }
+
+    public void setDoctor(Doctor doctor) {
+        this.doctor = doctor;
+    }
+
+    public Student getStudent() {
+        return student;
+    }
+
+    public void setStudent(Student student) {
+        this.student = student;
+    }
+
+    public int getScheduleId() {
+        return scheduleId;
+    }
+
+    public void setScheduleId(int scheduleId) {
+        this.scheduleId = scheduleId;
+    }
+
+    public BookingStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(BookingStatus status) {
+        this.status = status;
+    }
+
+    @Override
+    public String toString() {
+        return "Booking id: " + Integer.toString(id);
+    }
+
 }

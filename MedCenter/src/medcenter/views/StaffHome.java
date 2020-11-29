@@ -17,9 +17,9 @@
 package medcenter.views;
 
 import javax.swing.DefaultListModel;
-import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.ListCellRenderer;
+import medcenter.controller.AuthController;
 import medcenter.helpers.UserDataInFile;
 import medcenter.models.User;
 
@@ -28,6 +28,10 @@ import medcenter.models.User;
  * @author Chandima Bandara
  */
 public class StaffHome extends javax.swing.JFrame {
+
+    private AuthController authController = new AuthController();
+
+    ;
 
     /**
      * Creates new form StaffHome
@@ -235,7 +239,8 @@ public class StaffHome extends javax.swing.JFrame {
     private void btnLogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLogoutActionPerformed
         int dialogResult = JOptionPane.showConfirmDialog(null, "You will be logged out and the application will close!", "Warning", JOptionPane.OK_CANCEL_OPTION);
         if (dialogResult == JOptionPane.YES_OPTION) {
-            System.out.println("sads");
+            authController.logout();
+            dispose();
         }
     }//GEN-LAST:event_btnLogoutActionPerformed
 
