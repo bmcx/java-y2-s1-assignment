@@ -28,4 +28,9 @@ public class Doctor extends User {
         super(id, firstname, lastname, username, DOCTOR);
     }
 
+    @Override
+    public String getName() {
+        return String.format("Dr. %s %s", this.firstname, this.lastname);
+    }   
+
 }

@@ -62,4 +62,14 @@ public class AuthController {
         localData.clearUserData();
     }
 
+    @Override
+    protected void finalize() throws Throwable {
+        try {
+            con.close();
+        } finally {
+            super.finalize();
+        }
+    }
+    
+
 }

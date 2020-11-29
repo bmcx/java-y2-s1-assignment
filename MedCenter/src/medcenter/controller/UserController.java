@@ -101,4 +101,14 @@ public class UserController {
         }
         throw new DataNotFoundException();
     }
+
+    @Override
+    protected void finalize() throws Throwable {
+        try {
+            con.close();
+        } finally {
+            super.finalize();
+        }
+    }
+
 }

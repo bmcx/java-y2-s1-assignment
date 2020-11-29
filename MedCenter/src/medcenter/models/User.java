@@ -50,6 +50,10 @@ public class User {
         this.id = id;
     }
 
+    public String getName() {
+        return String.format("%s %s", this.firstname, this.lastname);
+    }
+    
     public String getUsername() {
         return username;
     }
