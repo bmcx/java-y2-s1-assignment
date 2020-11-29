@@ -105,7 +105,7 @@ public class AddStudent extends javax.swing.JPanel {
 
         jLabel7.setText("Any Health Issues");
 
-        jTextField4.setText("jTextField4");
+        jTextField4.setText("<Any Health Issues>");
         jTextField4.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jTextField4ActionPerformed(evt);
