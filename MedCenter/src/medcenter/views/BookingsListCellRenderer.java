@@ -26,13 +26,13 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
-import medcenter.models.Schedule;
+import medcenter.models.Booking;
 
 /**
  *
  * @author Chandima Bandara
  */
-class BookingTitleListCellRenderer implements ListCellRenderer<Schedule> {
+class BookingsListCellRenderer implements ListCellRenderer<Booking> {
 
     protected static Border noFocusBorder = new EmptyBorder(15, 1, 1, 1);
 
@@ -41,7 +41,7 @@ class BookingTitleListCellRenderer implements ListCellRenderer<Schedule> {
     protected DefaultListCellRenderer defaultRenderer = new DefaultListCellRenderer();
 
     @Override
-    public Component getListCellRendererComponent(JList<? extends Schedule> list, Schedule value, int index, boolean isSelected, boolean cellHasFocus) {
+    public Component getListCellRendererComponent(JList<? extends Booking> list, Booking value, int index, boolean isSelected, boolean cellHasFocus) {
         JLabel renderer = (JLabel) defaultRenderer.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
         renderer.setBorder(noFocusBorder);
         return renderer;
