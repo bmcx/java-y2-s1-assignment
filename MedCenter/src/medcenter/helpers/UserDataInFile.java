@@ -76,7 +76,7 @@ public class UserDataInFile implements PersistUserData {
         }
         JSONObject jsonObj = (JSONObject) obj;
         int id = (int) (long) jsonObj.get("id");
-        String firstname = (String) jsonObj.get("firstName");
+        String firstname = (String) jsonObj.get("firstname");
         String lastname = (String) jsonObj.get("lastname");
         String username = (String) jsonObj.get("username");
         UserRole role = UserRole.valueOf((String) jsonObj.get("role"));
