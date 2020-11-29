@@ -32,6 +32,7 @@ import javax.swing.Timer;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import medcenter.controller.AuthController;
+import medcenter.controller.BookingController;
 import medcenter.controller.ScheduleController;
 import medcenter.helpers.UserDataInFile;
 import medcenter.models.Booking;
@@ -377,17 +378,27 @@ public class StaffHome extends javax.swing.JFrame {
     }//GEN-LAST:event_btnAddBookingActionPerformed
 
     private void btnDeleteBookingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteBookingActionPerformed
-        // TODO add your handling code here:
+        BookingController bookingController = new BookingController();
+        Booking selected = (Booking) lstBookings.getSelectedValue();
+        if (selected != null) {
+            int dialogResult = JOptionPane.showConfirmDialog(null, "This action cannot be undone!", "Are you sure", JOptionPane.YES_NO_OPTION);
+            if (dialogResult == JOptionPane.YES_OPTION) {
+                bookingController.deleteBooking(selected.getId());
+                refresh();
+            }
+
+        }
     }//GEN-LAST:event_btnDeleteBookingActionPerformed
 
     private void btnRefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefreshActionPerformed
-       DefaultListModel emptyModel = new DefaultListModel();
+        refresh();
+    }//GEN-LAST:event_btnRefreshActionPerformed
+    void refresh() {
+        DefaultListModel emptyModel = new DefaultListModel();
         drawTimeSlotList();
         lstBookings.clearSelection();
         lstBookings.setModel(emptyModel);
-        
-    }//GEN-LAST:event_btnRefreshActionPerformed
-
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAddBooking;

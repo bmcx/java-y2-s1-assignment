@@ -178,6 +178,7 @@ public class AddBooking extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Student ID cannot be empty", "Error!", JOptionPane.ERROR_MESSAGE);
         } else {
             bookingController.addBooking(this.selected.getDoctor().getId(), Integer.parseInt(stdId), this.selected.getId());
+            dispose();
         }
     }//GEN-LAST:event_btnAddActionPerformed
 
