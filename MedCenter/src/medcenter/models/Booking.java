@@ -31,6 +31,7 @@ public class Booking {
     int scheduleId;
     BookingStatus status;
     LocalDateTime createdAt;
+    private Schedule schedule;
 
     public Booking(int id, Doctor doctor, Student student, int scheduleId, BookingStatus status, LocalDateTime createdAt) {
         this.id = id;
@@ -87,7 +88,18 @@ public class Booking {
 
     @Override
     public String toString() {
+        if (this.schedule != null) {
+            return String.format("%s, %s-%s   [%s]  - Student: %s ", this.schedule.day.toString(), this.schedule.from.toString(), this.schedule.to.toString(), this.status.name(), this.student.getName());
+        }
         return String.format("[%s] %s", this.status.name(), this.student.getName());
+    }
+
+    public Schedule getSchedule() {
+        return schedule;
+    }
+
+    public void setSchedule(Schedule schedule) {
+        this.schedule = schedule;
     }
 
 }

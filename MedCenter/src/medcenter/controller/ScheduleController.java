@@ -61,11 +61,13 @@ public class ScheduleController {
                 Schedule schedule = new Schedule(id, doctor, day, from, to, maxBookingCount);
                 list.add(schedule);
             }
+     
         } catch (SQLException ex) {
             Logger.getLogger(AuthController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (DataNotFoundException ex) {
             Logger.getLogger(ScheduleController.class.getName()).log(Level.SEVERE, null, ex);
         }
+
         return list;
     }
 

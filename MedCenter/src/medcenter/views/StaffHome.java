@@ -89,20 +89,8 @@ public class StaffHome extends javax.swing.JFrame {
     }
 
     private void setCurrentUser() {
-        this.addFocusListener(new FocusListener() {
-
-            @Override
-            public void focusGained(FocusEvent e) {
-                System.out.println("got"); //To change body of generated methods, choose Tools | Templates.
-            }
-
-            @Override
-            public void focusLost(FocusEvent e) {
-                System.out.println("lost");//To change body of generated methods, choose Tools | Templates.
-            }
-        });
         User currentUser = new UserDataInFile().retriveUserData();
-        lblUsername.setText(currentUser.getFirstname() + " " + currentUser.getLastname());
+        lblUsername.setText("Logged in as " + currentUser.getName());
     }
 
     private void drawTimeSlotList() {
@@ -201,16 +189,22 @@ public class StaffHome extends javax.swing.JFrame {
         btnRefresh = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
-        tblDoctors = new javax.swing.JTable();
+        tblDoctors = new javax.swing.JTable(){
+            public boolean isCellEditable(int row,int column){
+                if(column == 0) return false;//the 4th column is not editable
+                return true;
+            }
+        };
         jLabel2 = new javax.swing.JLabel();
         btnAddDoc = new javax.swing.JButton();
         btnRefreshTable = new javax.swing.JButton();
         jButton3 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("MedCenter | Staff ");
+        setTitle("MedCenter");
         setLocation(new java.awt.Point(0, 0));
 
+        jPanel1.setBackground(javax.swing.UIManager.getDefaults().getColor("EditorPane.background"));
         jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
         jLabel1.setFont(new java.awt.Font("Segoe UI Light", 0, 24)); // NOI18N
@@ -233,15 +227,15 @@ public class StaffHome extends javax.swing.JFrame {
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(18, 18, 18)
+                .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel3)
-                    .addComponent(jLabel1))
+                    .addComponent(jLabel1)
+                    .addComponent(jLabel3))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnLogout, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(lblUsername, javax.swing.GroupLayout.Alignment.TRAILING))
-                .addGap(19, 19, 19))
+                .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -252,11 +246,10 @@ public class StaffHome extends javax.swing.JFrame {
                         .addGap(5, 5, 5)
                         .addComponent(lblUsername)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnLogout)
-                        .addGap(0, 0, Short.MAX_VALUE))
+                        .addComponent(btnLogout))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -290,7 +283,7 @@ public class StaffHome extends javax.swing.JFrame {
         jLabel6.setText("Actions");
 
         btnRefresh.setFont(new java.awt.Font("Dialog", 1, 10)); // NOI18N
-        btnRefresh.setText("Refresh");
+        btnRefresh.setText("Refresh Data");
         btnRefresh.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnRefreshActionPerformed(evt);
@@ -357,6 +350,7 @@ public class StaffHome extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        tblDoctors.getTableHeader().setReorderingAllowed(false);
         jScrollPane2.setViewportView(tblDoctors);
 
         jLabel2.setText("*All the changes you make here will be updated in the database immediately.");
@@ -368,7 +362,7 @@ public class StaffHome extends javax.swing.JFrame {
             }
         });
 
-        btnRefreshTable.setText("Refresh");
+        btnRefreshTable.setText("Refresh Data");
         btnRefreshTable.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnRefreshTableActionPerformed(evt);
@@ -394,7 +388,7 @@ public class StaffHome extends javax.swing.JFrame {
                         .addComponent(jLabel2)
                         .addGap(11, 11, 11)
                         .addComponent(btnRefreshTable)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 127, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 98, Short.MAX_VALUE)
                         .addComponent(btnAddDoc)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton3)))
@@ -439,6 +433,9 @@ public class StaffHome extends javax.swing.JFrame {
         if (dialogResult == JOptionPane.YES_OPTION) {
             authController.logout();
             dispose();
+            Login login = new Login();
+            login.setLocationRelativeTo(null);
+            login.setVisible(true);
         }
     }//GEN-LAST:event_btnLogoutActionPerformed
 

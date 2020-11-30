@@ -179,6 +179,7 @@ public class AddBooking extends javax.swing.JFrame {
         } else {
             bookingController.addBooking(this.selected.getDoctor().getId(), Integer.parseInt(stdId), this.selected.getId());
             dispose();
+            JOptionPane.showMessageDialog(null, "Press refresh data to see updated information", "Info", JOptionPane.INFORMATION_MESSAGE);
         }
     }//GEN-LAST:event_btnAddActionPerformed
 

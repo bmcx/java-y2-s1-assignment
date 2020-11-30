@@ -42,7 +42,8 @@ class BookingsListCellRenderer implements ListCellRenderer<Booking> {
 
     @Override
     public Component getListCellRendererComponent(JList<? extends Booking> list, Booking value, int index, boolean isSelected, boolean cellHasFocus) {
-        JLabel renderer = (JLabel) defaultRenderer.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+        JLabel renderer = (JLabel) defaultRenderer.getListCellRendererComponent(list, (index+1) + ") " + value.toString(), index, isSelected, cellHasFocus);
+        renderer.setIconTextGap(2);
         renderer.setBorder(noFocusBorder);
         return renderer;
 

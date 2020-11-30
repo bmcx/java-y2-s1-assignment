@@ -18,6 +18,9 @@ package medcenter.helpers;
 
 import com.mysql.jdbc.Connection;
 import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 
 /**
@@ -26,11 +29,20 @@ import javax.swing.JOptionPane;
  */
 public class Database {
 
+    static Connection con = null;
+
     public static Connection createConnection() {
-        Connection con = null;
+        if (con != null) {
+            return con;
+        }
         String url = "jdbc:mysql://localhost:3306/medcenter"; //MySQL URL and followed by the database name
         String username = "root"; //MySQL username
         String password = ""; //MySQL password   
+        return createConnection(url, username, password);
+    }
+
+    public static Connection createConnection(String url, String username, String password) {
+
         try {
             try {
                 Class.forName("com.mysql.jdbc.Driver"); //loading mysql driver 
@@ -39,7 +51,8 @@ public class Database {
                 e.printStackTrace();
             }
             con = (Connection) DriverManager.getConnection(url, username, password); //attempting to connect to MySQL database
-//            System.out.println("Printing connection object " + con);
+            System.out.println("Printing connection object " + con);
+
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Database connection error", "Error", JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();

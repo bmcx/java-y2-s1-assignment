@@ -27,8 +27,10 @@ import java.util.logging.Logger;
 import medcenter.helpers.Database;
 import medcenter.models.Booking;
 import medcenter.models.Doctor;
+import medcenter.models.Schedule;
 import medcenter.models.Student;
 import medcenter.models.types.CommonTypes;
+import medcenter.models.types.CommonTypes.BookingStatus;
 import medcenter.models.types.DataNotFoundException;
 
 /**
@@ -38,13 +40,14 @@ import medcenter.models.types.DataNotFoundException;
 public class BookingController {
 
     Connection con = Database.createConnection();
+    ScheduleController scheduleController = new ScheduleController();
 
     public List<Booking> fetchBookingsByDoctorId(int doctorId) {
         List<Booking> list = new ArrayList<>();
         UserController userController = new UserController();
         try {
             Statement stmt = (Statement) con.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT * FROM booking WHERE doctorId='" + doctorId + "';");
+            ResultSet rs = stmt.executeQuery("SELECT * FROM booking WHERE doctorId='" + doctorId + "' ORDER BY scheduleId DESC;");
 
             while (rs.next()) {
 
@@ -54,8 +57,9 @@ public class BookingController {
                 int scheduleId = rs.getInt("scheduleId");
                 CommonTypes.BookingStatus status = CommonTypes.BookingStatus.valueOf(rs.getString("status"));
                 LocalDateTime createdAt = rs.getTimestamp("createdAt").toLocalDateTime();
-
+                Schedule sch = scheduleController.fetchScheduleById(scheduleId);
                 Booking booking = new Booking(id, doctor, student, scheduleId, status, createdAt);
+                booking.setSchedule(sch);
                 list.add(booking);
             }
         } catch (SQLException ex) {
@@ -71,6 +75,18 @@ public class BookingController {
         try {
             Statement stmt = (Statement) con.createStatement();
             stmt.executeUpdate("INSERT INTO booking(doctorId, studentId, scheduleId) VALUES ('" + doctorId + "','" + studentId + "','" + scheduleId + "');");
+
+        } catch (SQLException ex) {
+            Logger.getLogger(AuthController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }
+
+    public void setBookingStatus(int bookingId, BookingStatus status) {
+
+        try {
+            Statement stmt = (Statement) con.createStatement();
+            stmt.executeUpdate("UPDATE booking SET status='" + status.name() + "' WHERE id=" + bookingId + ";");
 
         } catch (SQLException ex) {
             Logger.getLogger(AuthController.class.getName()).log(Level.SEVERE, null, ex);
@@ -104,7 +120,6 @@ public class BookingController {
                 Student student = userController.fetchStudentById(rs.getInt("studentId"));
                 CommonTypes.BookingStatus status = CommonTypes.BookingStatus.valueOf(rs.getString("status"));
                 LocalDateTime createdAt = rs.getTimestamp("createdAt").toLocalDateTime();
-
                 Booking booking = new Booking(id, doctor, student, scheduleId, status, createdAt);
                 list.add(booking);
             }
