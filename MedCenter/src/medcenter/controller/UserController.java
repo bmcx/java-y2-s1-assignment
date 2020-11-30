@@ -150,13 +150,4 @@ public class UserController {
 
     }
 
-    @Override
-    protected void finalize() throws Throwable {
-        try {
-            con.close();
-        } finally {
-            super.finalize();
-        }
-    }
-
 }

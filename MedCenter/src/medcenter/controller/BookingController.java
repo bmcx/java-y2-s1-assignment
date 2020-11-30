@@ -163,13 +163,6 @@ public class BookingController {
         return list;
     }
 
-    @Override
-    protected void finalize() throws Throwable {
-        try {
-            con.close();
-        } finally {
-            super.finalize();
-        }
-    }
+    
 
 }
