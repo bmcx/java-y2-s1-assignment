@@ -70,6 +70,38 @@ public class BookingController {
         return list;
     }
 
+    public Booking fetchActiveBookingByStudentId(int studentId) {
+        Booking out = null;
+        ResultSet rs1;
+        UserController userController = new UserController();
+        try {
+            Statement stmt1 = (Statement) con.createStatement();
+            ResultSet rs = stmt1.executeQuery("SELECT * FROM booking WHERE status != 'CANCELED' AND studentId='" + studentId + "' ORDER BY scheduleId DESC;");
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                Doctor doctor = userController.fetchDoctorById(rs.getInt("doctorId"));
+                Student student = userController.fetchStudentById(rs.getInt("studentId"));
+                int scheduleId = rs.getInt("scheduleId");
+                Statement stmt2 = (Statement) con.createStatement();
+                rs1 = stmt2.executeQuery("SELECT * FROM schedule WHERE day >= CURRENT_DATE() AND id='" + scheduleId + "' ORDER BY day DESC, timeFrom ASC;");
+                if (rs1.first()) {
+                    CommonTypes.BookingStatus status = CommonTypes.BookingStatus.valueOf(rs.getString("status"));
+                    LocalDateTime createdAt = rs.getTimestamp("createdAt").toLocalDateTime();
+                    Schedule sch = scheduleController.fetchScheduleById(scheduleId);
+                    Booking booking = new Booking(id, doctor, student, scheduleId, status, createdAt);
+                    booking.setSchedule(sch);
+                    out = booking;
+                }
+            }
+
+        } catch (SQLException ex) {
+            Logger.getLogger(AuthController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (DataNotFoundException ex) {
+            Logger.getLogger(BookingController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return out;
+    }
+
     public void addBooking(int doctorId, int studentId, int scheduleId) {
 
         try {
