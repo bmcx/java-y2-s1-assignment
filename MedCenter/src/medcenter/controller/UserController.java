@@ -138,6 +138,17 @@ public class UserController {
 
     }
 
+    public void deleteDoctor(int doctorId) {
+
+        try {
+            Statement stmt = (Statement) con.createStatement();
+            stmt.executeUpdate("DELETE FROM user WHERE id='" + doctorId + "';");
+        } catch (SQLException ex) {
+            Logger.getLogger(AuthController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }
+
     public void addDoctor(Doctor doctor, String password) {
 
         try {

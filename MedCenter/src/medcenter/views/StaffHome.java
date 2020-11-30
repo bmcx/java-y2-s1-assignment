@@ -61,6 +61,7 @@ public class StaffHome extends javax.swing.JFrame {
     private DefaultListModel timeSlotsModel;
     private UserController userController;
     private ActionListener taskPerformer;
+    DefaultTableModel tableModel;
 
     /**
      * Creates new form StaffHome
@@ -74,6 +75,17 @@ public class StaffHome extends javax.swing.JFrame {
         this.taskPerformer = new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 btnDeleteBooking.setEnabled(lstBookings.getSelectedIndex() != -1);
+                if (lstTimeSlots.getSelectedIndex() == -1) {
+                    jLabel5.setText("Select a slot to view bookings");
+                } else {
+                    Schedule selected = (Schedule) lstTimeSlots.getSelectedValue();
+                    if(selected.getBookings().size() > 0){
+                        jLabel5.setText(selected.getBookings().size()+" Bookings available");
+                    }else{
+                        jLabel5.setText("There are no bookings yet");
+                    }
+                    
+                }
             }
         };
 
@@ -126,7 +138,7 @@ public class StaffHome extends javax.swing.JFrame {
 
     private void initDoctorsData() {
         String[] columnNames = {"Id", "Username", "Firstname", "Lastname", "Title", "Description"};
-        DefaultTableModel tableModel = new DefaultTableModel(columnNames, 0);
+        tableModel = new DefaultTableModel(columnNames, 0);
         List<Doctor> doctors = this.userController.fetchAllDoctors();
         doctors.forEach((item) -> tableModel.addRow(getRow(item)));
         tblDoctors.setModel(tableModel);
@@ -472,8 +484,14 @@ public class StaffHome extends javax.swing.JFrame {
     }//GEN-LAST:event_btnRefreshTableActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        int row = tblDoctors.getSelectedRow();
-        System.out.println(row);
+        int dialogResult = JOptionPane.showConfirmDialog(null, "This action cannot be undone!", "Are you sure", JOptionPane.YES_NO_OPTION);
+        if (dialogResult == JOptionPane.YES_OPTION) {
+            int row = tblDoctors.getSelectedRow();
+            Object doc = tableModel.getValueAt(row, 0);
+            userController.deleteDoctor(Integer.parseInt(doc.toString()));
+            refresh();
+        }
+
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void btnAddDocActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddDocActionPerformed
