@@ -16,10 +16,13 @@
  */
 package medcenter.views;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.List;
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
 import javax.swing.ListCellRenderer;
+import javax.swing.Timer;
 import medcenter.controller.AuthController;
 import medcenter.controller.BookingController;
 import medcenter.controller.ScheduleController;
@@ -27,6 +30,7 @@ import medcenter.helpers.UserDataInFile;
 import medcenter.models.Booking;
 import medcenter.models.Schedule;
 import medcenter.models.User;
+import medcenter.models.types.CommonTypes;
 
 /**
  *
@@ -38,6 +42,7 @@ public class StudentHome extends javax.swing.JFrame {
     private BookingController bookingController;
     private ScheduleController scheduleController;
     private DefaultListModel timeSlotsModel;
+    private ActionListener taskPerformer;
     User currentUser;
     Booking activeBooking = null;
 
@@ -49,9 +54,19 @@ public class StudentHome extends javax.swing.JFrame {
         this.bookingController = new BookingController();
         this.scheduleController = new ScheduleController();
         this.timeSlotsModel = new DefaultListModel();
+
+        this.taskPerformer = new ActionListener() {
+            public void actionPerformed(ActionEvent evt) {
+                btnAddBooking.setEnabled(lstSlots.getSelectedIndex() != -1);
+            }
+        };
+
         initComponents();
         setCurrentUser();
         refresh();
+        Timer timer = new Timer(100, taskPerformer);
+        timer.setRepeats(true);
+        timer.start();
     }
 
     private void setCurrentUser() {
@@ -91,6 +106,7 @@ public class StudentHome extends javax.swing.JFrame {
         lblBFromTo.setVisible(val);
         lblBStatus.setVisible(val);
         doc.setVisible(val);
+        jPanel4.setVisible(val);
     }
 
     private void drawTimeSlotList() {
@@ -134,12 +150,14 @@ public class StudentHome extends javax.swing.JFrame {
         lblBDate = new javax.swing.JLabel();
         lblBFromTo = new javax.swing.JLabel();
         lblBStatus = new javax.swing.JLabel();
+        btnCancel = new javax.swing.JButton();
         jLabel5 = new javax.swing.JLabel();
         btnRefresh = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
+        btnAddBooking = new javax.swing.JButton();
         lblNoBooking = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("MedCenter");
 
         jPanel1.setBackground(javax.swing.UIManager.getDefaults().getColor("EditorPane.background"));
         jPanel1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
@@ -258,6 +276,13 @@ public class StudentHome extends javax.swing.JFrame {
         lblBStatus.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         lblBStatus.setText("status");
 
+        btnCancel.setText("Cancel Booking");
+        btnCancel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCancelActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
@@ -265,26 +290,27 @@ public class StudentHome extends javax.swing.JFrame {
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(doc, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addComponent(lblBDate)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(lblBFromTo))
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addComponent(lblBCreated)
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(doc, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addGroup(jPanel4Layout.createSequentialGroup()
-                                .addComponent(lblBStatus)
-                                .addGap(0, 0, Short.MAX_VALUE))
-                            .addGroup(jPanel4Layout.createSequentialGroup()
-                                .addComponent(lblBDate)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(lblBFromTo)))
-                        .addContainerGap())))
+                        .addComponent(lblBStatus)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnCancel)))
+                .addContainerGap())
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(lblBStatus)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblBStatus)
+                    .addComponent(btnCancel))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(doc, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -305,8 +331,8 @@ public class StudentHome extends javax.swing.JFrame {
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, 205, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 69, Short.MAX_VALUE))
+                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, 213, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 61, Short.MAX_VALUE))
         );
 
         jLabel5.setText("Available Time Slots:");
@@ -318,7 +344,12 @@ public class StudentHome extends javax.swing.JFrame {
             }
         });
 
-        jButton1.setText("Add Booking");
+        btnAddBooking.setText("Add Booking");
+        btnAddBooking.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddBookingActionPerformed(evt);
+            }
+        });
 
         lblNoBooking.setText("There are no active bookings ");
 
@@ -338,7 +369,7 @@ public class StudentHome extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jLabel2)
                         .addGap(58, 58, 58)
-                        .addComponent(jButton1)))
+                        .addComponent(btnAddBooking)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
@@ -365,7 +396,7 @@ public class StudentHome extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(btnRefresh)
                             .addComponent(jLabel5)
-                            .addComponent(jButton1))
+                            .addComponent(btnAddBooking))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
@@ -388,14 +419,30 @@ public class StudentHome extends javax.swing.JFrame {
         refresh();
     }//GEN-LAST:event_btnRefreshActionPerformed
 
+    private void btnAddBookingActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddBookingActionPerformed
+        if (activeBooking != null) {
+            JOptionPane.showMessageDialog(null, "Please cancel existing booking before adding an another one", "Already a booking is available!", JOptionPane.ERROR_MESSAGE);
+        } else {
+            Schedule selected = (Schedule) lstSlots.getSelectedValue();
+            this.bookingController.addBooking(selected.getDoctor().getId(), currentUser.getId(), selected.getId());
+        }
+        refresh();
+    }//GEN-LAST:event_btnAddBookingActionPerformed
+
+    private void btnCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelActionPerformed
+        this.bookingController.setBookingStatus(activeBooking.getId(), CommonTypes.BookingStatus.CANCELED);
+        refresh();
+    }//GEN-LAST:event_btnCancelActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnAddBooking;
+    private javax.swing.JButton btnCancel;
     private javax.swing.JButton btnLogout;
     private javax.swing.JButton btnRefresh;
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.ButtonGroup buttonGroup2;
     private javax.swing.JPanel doc;
-    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
