@@ -54,24 +54,29 @@ import medcenter.models.types.DataNotFoundException;
  */
 public class StaffHome extends javax.swing.JFrame {
 
-    private AuthController authController = new AuthController();
-    ListSelectionListener timeSlotsSelectionListener;
-    ListSelectionListener bookingsSelectionListener;
-    ScheduleController scheduleController = new ScheduleController();
-    DefaultListModel timeSlotsModel = new DefaultListModel();
-    UserController userController;
-    ActionListener taskPerformer;
+    private AuthController authController;
+    private ListSelectionListener timeSlotsSelectionListener;
+    private ListSelectionListener bookingsSelectionListener;
+    private ScheduleController scheduleController;
+    private DefaultListModel timeSlotsModel;
+    private UserController userController;
+    private ActionListener taskPerformer;
 
     /**
      * Creates new form StaffHome
      */
     public StaffHome() {
+        this.timeSlotsModel = new DefaultListModel();
+        this.scheduleController = new ScheduleController();
+        this.authController = new AuthController();
         this.userController = new UserController();
+
         this.taskPerformer = new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 btnDeleteBooking.setEnabled(lstBookings.getSelectedIndex() != -1);
             }
         };
+
         initTimeSlotListListner();
         initComponents();
         setCurrentUser();
@@ -153,10 +158,6 @@ public class StaffHome extends javax.swing.JFrame {
         });
     }
 
-    protected void actualizatabla(TableModelEvent e) {
-
-    }
-
     private String[] getRow(Doctor doctor) {
         String[] data = {Integer.toString(doctor.getId()), doctor.getUsername(), doctor.getFirstname(), doctor.getLastname(), doctor.getTitle(), doctor.getDescription()};
         return data;
@@ -201,6 +202,10 @@ public class StaffHome extends javax.swing.JFrame {
         jPanel3 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         tblDoctors = new javax.swing.JTable();
+        jLabel2 = new javax.swing.JLabel();
+        btnAddDoc = new javax.swing.JButton();
+        btnRefreshTable = new javax.swing.JButton();
+        jButton3 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("MedCenter | Staff ");
@@ -333,7 +338,7 @@ public class StaffHome extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(btnDeleteBooking)
                         .addGap(0, 0, Short.MAX_VALUE))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 336, Short.MAX_VALUE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 361, Short.MAX_VALUE)
                     .addComponent(lstBookings, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
@@ -354,15 +359,59 @@ public class StaffHome extends javax.swing.JFrame {
         ));
         jScrollPane2.setViewportView(tblDoctors);
 
+        jLabel2.setText("*All the changes you make here will be updated in the database immediately.");
+
+        btnAddDoc.setText("Add new");
+        btnAddDoc.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddDocActionPerformed(evt);
+            }
+        });
+
+        btnRefreshTable.setText("Refresh");
+        btnRefreshTable.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRefreshTableActionPerformed(evt);
+            }
+        });
+
+        jButton3.setText("Delete");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 832, Short.MAX_VALUE)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane2)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(jLabel2)
+                        .addGap(11, 11, 11)
+                        .addComponent(btnRefreshTable)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 127, Short.MAX_VALUE)
+                        .addComponent(btnAddDoc)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton3)))
+                .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 390, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                .addGap(4, 4, 4)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(btnAddDoc, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnRefreshTable, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(8, 8, 8)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 371, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         jTabbedPane2.addTab("Doctors", jPanel3);
@@ -420,8 +469,24 @@ public class StaffHome extends javax.swing.JFrame {
     private void btnRefreshActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefreshActionPerformed
         refresh();
     }//GEN-LAST:event_btnRefreshActionPerformed
+
+    private void btnRefreshTableActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefreshTableActionPerformed
+        refresh();
+    }//GEN-LAST:event_btnRefreshTableActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        int row = tblDoctors.getSelectedRow();
+        System.out.println(row);
+    }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void btnAddDocActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddDocActionPerformed
+        NewDoctor newDoctor = new NewDoctor();
+        newDoctor.setLocationRelativeTo(null);
+        newDoctor.setVisible(true);
+    }//GEN-LAST:event_btnAddDocActionPerformed
     void refresh() {
         DefaultListModel emptyModel = new DefaultListModel();
+        initDoctorsData();
         drawTimeSlotList();
         lstBookings.clearSelection();
         lstBookings.setModel(emptyModel);
@@ -429,10 +494,14 @@ public class StaffHome extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAddBooking;
+    private javax.swing.JButton btnAddDoc;
     private javax.swing.JButton btnDeleteBooking;
     private javax.swing.JButton btnLogout;
     private javax.swing.JButton btnRefresh;
+    private javax.swing.JButton btnRefreshTable;
+    private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;

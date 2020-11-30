@@ -138,6 +138,18 @@ public class UserController {
 
     }
 
+    public void addDoctor(Doctor doctor, String password) {
+
+        try {
+            Statement stmt = (Statement) con.createStatement();
+            stmt.executeUpdate("INSERT INTO user(username, password, role, firstname, lastname, title, description) VALUES ('" + doctor.getUsername() + "','" + password + "','" + doctor.getRole() + "','" + doctor.getFirstname() + "','" + doctor.getLastname() + "','" + doctor.getTitle() + "','" + doctor.getDescription() + "');");
+            System.out.println("Doctor added");
+        } catch (SQLException ex) {
+            Logger.getLogger(AuthController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }
+
     @Override
     protected void finalize() throws Throwable {
         try {
