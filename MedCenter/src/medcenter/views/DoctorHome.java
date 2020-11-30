@@ -21,16 +21,24 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.sql.SQLException;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
 import javax.swing.ListCellRenderer;
 import javax.swing.Timer;
 import medcenter.controller.AuthController;
 import medcenter.controller.BookingController;
+import medcenter.controller.ScheduleController;
 import medcenter.helpers.UserDataInFile;
 import medcenter.models.Booking;
+import medcenter.models.Schedule;
 import medcenter.models.User;
 import static medcenter.models.types.CommonTypes.BookingStatus.*;
 
@@ -43,7 +51,9 @@ public class DoctorHome extends javax.swing.JFrame {
     private AuthController authController;
     private BookingController bookingController;
     private DefaultListModel bookingListModel;
+    private DefaultListModel slotListModel;
     private ActionListener taskPerformer;
+    private ScheduleController scheduleController;
     User currentUser;
 
     /**
@@ -53,11 +63,14 @@ public class DoctorHome extends javax.swing.JFrame {
         this.authController = new AuthController();
         this.bookingController = new BookingController();
         this.bookingListModel = new DefaultListModel();
+        this.slotListModel = new DefaultListModel();
+        this.scheduleController = new ScheduleController();
 
         this.taskPerformer = new ActionListener() {
             public void actionPerformed(ActionEvent evt) {
                 btnAccept.setEnabled(lstBookings.getSelectedIndex() != -1);
                 btnDecline.setEnabled(lstBookings.getSelectedIndex() != -1);
+                btnDelete.setEnabled(lstSlots.getSelectedIndex() != -1);
                 if (lstBookings.getSelectedIndex() != -1) {
                     Booking selected = (Booking) lstBookings.getSelectedValue();
                     if (selected.getStatus() == ACCEPTED) {
@@ -95,9 +108,22 @@ public class DoctorHome extends javax.swing.JFrame {
 
     }
 
+    private void drawSlotList() {
+
+        List<Schedule> schedules = scheduleController.fetchScheduleByDoctorId(currentUser.getId());
+        slotListModel.clear();
+        schedules.forEach((schedule) -> slotListModel.addElement(schedule));
+
+        lstSlots.setModel(slotListModel);
+        ListCellRenderer renderer = new TimeSlotsListCellRenderer();
+        lstSlots.setCellRenderer(renderer);
+//        lstTimeSlots.addListSelectionListener(timeSlotsSelectionListener);
+
+    }
 
     private void refresh() {
         drawBookingList();
+        drawSlotList();
     }
 
     /**
@@ -136,6 +162,7 @@ public class DoctorHome extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jSeparator1 = new javax.swing.JSeparator();
         btnAddSlot = new javax.swing.JButton();
+        btnDelete = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("MedCenter");
@@ -247,7 +274,7 @@ public class DoctorHome extends javax.swing.JFrame {
                             .addComponent(btnAccept)
                             .addComponent(btnDecline))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lstBookings, javax.swing.GroupLayout.PREFERRED_SIZE, 360, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(lstBookings, javax.swing.GroupLayout.DEFAULT_SIZE, 393, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Bookings", jPanel2);
@@ -280,25 +307,34 @@ public class DoctorHome extends javax.swing.JFrame {
         jLabel1.setText("Date:");
 
         btnAddSlot.setText("Add");
+        btnAddSlot.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddSlotActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
-                .addGap(3, 3, 3)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jLabel3)
-                    .addComponent(jLabel1)
-                    .addComponent(jCalendar1, javax.swing.GroupLayout.DEFAULT_SIZE, 226, Short.MAX_VALUE)
-                    .addComponent(jLabel2)
-                    .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 193, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cmbTimeFrom, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(cmbTimeTo, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(btnAddSlot, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addGap(3, 3, 3)
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(cmbTimeFrom, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(cmbTimeTo, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(jPanel4Layout.createSequentialGroup()
+                                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel3)
+                                    .addComponent(jLabel1)
+                                    .addComponent(jLabel2)
+                                    .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 193, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jCalendar1, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(0, 8, Short.MAX_VALUE))))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnAddSlot, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         jPanel4Layout.setVerticalGroup(
@@ -319,42 +355,63 @@ public class DoctorHome extends javax.swing.JFrame {
                 .addComponent(cmbTimeTo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(btnAddSlot)
-                .addContainerGap(117, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
+
+        btnDelete.setText("Delete");
+        btnDelete.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDeleteActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addComponent(lstSlots, javax.swing.GroupLayout.DEFAULT_SIZE, 509, Short.MAX_VALUE)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(lstSlots, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGap(6, 6, 6)
+                        .addComponent(jLabel6)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(btnRefresh1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 225, Short.MAX_VALUE)
+                        .addComponent(btnDelete)
+                        .addGap(2, 2, 2)))
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGap(16, 16, 16)
                         .addComponent(jLabel8))
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGap(12, 12, 12)
-                        .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, 232, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGap(12, 12, 12)
-                .addComponent(jLabel6)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnRefresh1)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnRefresh1)
-                    .addComponent(jLabel6)
-                    .addComponent(jLabel8))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(btnRefresh1)
+                            .addComponent(jLabel6))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btnDelete)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lstSlots, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(lstSlots, javax.swing.GroupLayout.PREFERRED_SIZE, 394, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE))))
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGap(17, 17, 17)
+                .addComponent(jLabel8)
+                .addGap(485, 485, 485))
         );
 
         jTabbedPane1.addTab("Availability Schedule", jPanel3);
@@ -373,14 +430,15 @@ public class DoctorHome extends javax.swing.JFrame {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(194, 194, 194)
-                .addComponent(jLabel7)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(194, 194, 194)
+                        .addComponent(jLabel7))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 465, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jTabbedPane1)
-                .addContainerGap())
         );
 
         pack();
@@ -414,14 +472,42 @@ public class DoctorHome extends javax.swing.JFrame {
     }//GEN-LAST:event_btnDeclineActionPerformed
 
     private void btnRefresh1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRefresh1ActionPerformed
-        // TODO add your handling code here:
+        refresh();
     }//GEN-LAST:event_btnRefresh1ActionPerformed
+
+    private void btnDeleteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteActionPerformed
+        Schedule selected = (Schedule) lstSlots.getSelectedValue();
+        if (selected.getBookings().size() > 0) {
+            JOptionPane.showMessageDialog(null, "Cannot delete, there are bookings already present", "Error!", JOptionPane.ERROR_MESSAGE);
+        } else {
+            this.scheduleController.deleteSchedule(selected.getId());
+        }
+        refresh();
+    }//GEN-LAST:event_btnDeleteActionPerformed
+
+    private void btnAddSlotActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddSlotActionPerformed
+
+        LocalDate day = jCalendar1.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        String from = (String) cmbTimeFrom.getSelectedItem();
+        String to = (String) cmbTimeTo.getSelectedItem();
+        if (from == null ? to == null : from.equals(to)) {
+            JOptionPane.showMessageDialog(null, "Select a valid range", "Error!", JOptionPane.ERROR_MESSAGE);
+        }
+        try {
+            this.scheduleController.addSchedule(currentUser.getId(), day, from, to);
+        } catch (SQLException ex) {
+            System.out.println(ex);
+            JOptionPane.showMessageDialog(null, "Already added time slot", "Error!", JOptionPane.ERROR_MESSAGE);
+        }
+        refresh();
+    }//GEN-LAST:event_btnAddSlotActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAccept;
     private javax.swing.JButton btnAddSlot;
     private javax.swing.JButton btnDecline;
+    private javax.swing.JButton btnDelete;
     private javax.swing.JButton btnLogout;
     private javax.swing.JButton btnRefresh;
     private javax.swing.JButton btnRefresh1;

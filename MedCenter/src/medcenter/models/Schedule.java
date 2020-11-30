@@ -50,6 +50,9 @@ public class Schedule {
 
     @Override
     public String toString() {
+        if (this.maxBookingCount == -1) {
+            return String.format("%s, %s-%s Bookings: %s", this.day.toString(), this.from.toString(), this.to.toString(), this.bookings.size());
+        }
         return String.format("%s %20s, %s-%s", this.doctor.getName(), this.day.toString(), this.from.toString(), this.to.toString());
     }
 

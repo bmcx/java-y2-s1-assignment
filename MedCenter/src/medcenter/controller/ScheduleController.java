@@ -61,7 +61,7 @@ public class ScheduleController {
                 Schedule schedule = new Schedule(id, doctor, day, from, to, maxBookingCount);
                 list.add(schedule);
             }
-     
+
         } catch (SQLException ex) {
             Logger.getLogger(AuthController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (DataNotFoundException ex) {
@@ -69,6 +69,24 @@ public class ScheduleController {
         }
 
         return list;
+    }
+
+    public void addSchedule(int doctorId, LocalDate day, String from, String to) throws SQLException {
+
+        Statement stmt = (Statement) con.createStatement();
+        stmt.executeUpdate("INSERT INTO schedule(doctorId, day, timeFrom, timeTo) VALUES ('" + doctorId + "','" + day + "','" + from + "','" + to + "');");
+
+    }
+
+    public void deleteSchedule(int id) {
+
+        try {
+            Statement stmt = (Statement) con.createStatement();
+            stmt.executeUpdate("DELETE FROM schedule WHERE id='" + id + "';");
+        } catch (SQLException ex) {
+            Logger.getLogger(ScheduleController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
     }
 
     public List<Schedule> fetchAllActive() {
@@ -129,7 +147,7 @@ public class ScheduleController {
         UserController userController = new UserController();
         try {
             Statement stmt = (Statement) con.createStatement();
-            ResultSet rs = stmt.executeQuery("SELECT * FROM schedule WHERE doctorId='" + doctorId + "';");
+            ResultSet rs = stmt.executeQuery("SELECT * FROM schedule WHERE doctorId='" + doctorId + "' ORDER BY day DESC, timeFrom DESC;");
 
             while (rs.next()) {
 
@@ -138,9 +156,8 @@ public class ScheduleController {
                 LocalDate day = rs.getDate("day").toLocalDate();
                 LocalTime from = rs.getTime("timeFrom").toLocalTime();
                 LocalTime to = rs.getTime("timeTo").toLocalTime();
-                int maxBookingCount = rs.getInt("maxCount");
 
-                Schedule schedule = new Schedule(id, doctor, day, from, to, maxBookingCount);
+                Schedule schedule = new Schedule(id, doctor, day, from, to, -1);
                 list.add(schedule);
             }
         } catch (SQLException ex) {
