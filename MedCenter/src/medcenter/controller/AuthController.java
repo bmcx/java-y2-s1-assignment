@@ -33,9 +33,6 @@ import medcenter.models.types.InvalidLoginDataException;
  */
 public class AuthController {
 
-    public AuthController() {
-    }
-
     Connection con = Database.createConnection();
     UserDataInFile localData = new UserDataInFile();
 
@@ -44,7 +41,7 @@ public class AuthController {
             Statement stmt = (Statement) con.createStatement();
             ResultSet rs = stmt.executeQuery("SELECT * FROM user WHERE username='" + username + "' AND password='" + password + "';");
             if (rs.first()) {
-                int id = rs.getInt("id");;
+                int id = rs.getInt("id");
                 String firstname = rs.getString("firstname");
                 String lastname = rs.getString("lastname");
                 CommonTypes.UserRole role = CommonTypes.UserRole.valueOf(rs.getString("role"));
@@ -61,8 +58,5 @@ public class AuthController {
     public void logout() {
         localData.clearUserData();
     }
-
-
-    
 
 }

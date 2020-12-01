@@ -18,18 +18,18 @@ package medcenter.helpers;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.nio.file.*;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import medcenter.framework.PersistUserData;
 import medcenter.models.User;
 import medcenter.models.types.CommonTypes.UserRole;
-
 import org.json.simple.JSONObject;
-import org.json.simple.parser.*;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 /**
  *
@@ -65,9 +65,9 @@ public class UserDataInFile implements PersistUserData {
 
         Object obj;
         try {
-            FileReader f = new FileReader(filename);
-            obj = new JSONParser().parse(f);
-            f.close();
+            try (FileReader f = new FileReader(filename)) {
+                obj = new JSONParser().parse(f);
+            }
         } catch (IOException ex) {
             return null;
         } catch (ParseException ex) {

@@ -19,10 +19,7 @@ package medcenter.models;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import medcenter.controller.BookingController;
-import medcenter.models.types.DataNotFoundException;
 
 /**
  *
@@ -57,8 +54,8 @@ public class Schedule {
     }
 
     public void fetchBookings() {
-        BookingController bookings = new BookingController();
-        this.bookings = bookings.fetchBookingsByScheduleId(this.id);
+        BookingController bks = new BookingController();
+        this.bookings = bks.fetchBookingsByScheduleId(this.id);
     }
 
     public int getId() {

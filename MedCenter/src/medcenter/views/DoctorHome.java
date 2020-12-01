@@ -16,19 +16,12 @@
  */
 package medcenter.views;
 
-import com.toedter.calendar.JDateChooser;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.time.ZoneId;
-import java.util.Date;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
 import javax.swing.ListCellRenderer;
@@ -40,7 +33,8 @@ import medcenter.helpers.UserDataInFile;
 import medcenter.models.Booking;
 import medcenter.models.Schedule;
 import medcenter.models.User;
-import static medcenter.models.types.CommonTypes.BookingStatus.*;
+import static medcenter.models.types.CommonTypes.BookingStatus.ACCEPTED;
+import static medcenter.models.types.CommonTypes.BookingStatus.REJECTED;
 
 /**
  *

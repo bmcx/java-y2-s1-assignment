@@ -18,7 +18,6 @@ package medcenter.views;
 
 import java.util.List;
 import javax.swing.JOptionPane;
-import javax.swing.ListCellRenderer;
 import medcenter.controller.BookingController;
 import medcenter.controller.UserController;
 import medcenter.models.ComboItem;

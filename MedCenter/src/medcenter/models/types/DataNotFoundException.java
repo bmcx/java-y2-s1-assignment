@@ -14,7 +14,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 package medcenter.models.types;
 
 /**
@@ -22,5 +21,9 @@ package medcenter.models.types;
  * @author Chandima Bandara
  */
 public class DataNotFoundException extends Exception {
-    
+
+    @Override
+    public String getMessage() {
+        return "Data not found"; 
+    }
 }

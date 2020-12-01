@@ -23,6 +23,17 @@ package medcenter.models.types;
 public class InvalidLoginDataException extends Exception {
 
     public InvalidLoginDataException() {
+        
+    }
+
+    @Override
+    public String toString() {
+        return "There might be a error in the username or password";
+    }
+
+    @Override
+    public String getMessage() {
+        return "Login data is invalid";
     }
 
 }

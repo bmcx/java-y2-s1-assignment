@@ -21,17 +21,14 @@ import com.mysql.jdbc.Statement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import medcenter.helpers.Database;
-import medcenter.models.Booking;
 import medcenter.models.Doctor;
 import medcenter.models.Schedule;
-import medcenter.models.Student;
-import medcenter.models.types.CommonTypes;
 import medcenter.models.types.DataNotFoundException;
 
 /**

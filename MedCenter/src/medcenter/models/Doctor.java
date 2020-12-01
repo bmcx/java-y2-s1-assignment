@@ -29,7 +29,7 @@ public class Doctor extends User {
 
     public Doctor(int id, String firstname, String lastname, String username, String title, String description) {
         super(id, firstname, lastname, username, DOCTOR);
-        this.title = !title.isEmpty() ? title : "N/A";;
+        this.title = !title.isEmpty() ? title : "N/A";
         this.description = !description.isEmpty() ? description : "N/A";
     }
 

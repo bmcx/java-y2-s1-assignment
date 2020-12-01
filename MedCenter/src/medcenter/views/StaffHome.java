@@ -18,19 +18,12 @@ package medcenter.views;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.ListCellRenderer;
-import javax.swing.SwingUtilities;
 import javax.swing.Timer;
-import javax.swing.event.CellEditorListener;
-import javax.swing.event.ChangeEvent;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.event.TableModelEvent;
@@ -46,7 +39,6 @@ import medcenter.models.Booking;
 import medcenter.models.Doctor;
 import medcenter.models.Schedule;
 import medcenter.models.User;
-import medcenter.models.types.DataNotFoundException;
 
 /**
  *
@@ -79,12 +71,12 @@ public class StaffHome extends javax.swing.JFrame {
                     jLabel5.setText("Select a slot to view bookings");
                 } else {
                     Schedule selected = (Schedule) lstTimeSlots.getSelectedValue();
-                    if(selected.getBookings().size() > 0){
-                        jLabel5.setText(selected.getBookings().size()+" Bookings available");
-                    }else{
+                    if (selected.getBookings().size() > 0) {
+                        jLabel5.setText(selected.getBookings().size() + " Bookings available");
+                    } else {
                         jLabel5.setText("There are no bookings yet");
                     }
-                    
+
                 }
             }
         };
